@@ -24,12 +24,6 @@ const TEMPLATE = `
 </html>
 `
 
-// Pretend this is a database or something
-var assignments map[string]int = map[string]int{
-	BUCKET_A_NAME: 0,
-	BUCKET_B_NAME: 0,
-}
-
 var tmpl = template.Must(template.New("index").Parse(TEMPLATE))
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -43,12 +37,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	// This sort of modulo thing is just an example of how users could be assigned.
 	// One benefit is that users in the same household will likely have a shared experience
 	// in case it comes up in conversation.
-
-	if lastChar%2 == 0 {
-		assignments[BUCKET_A_NAME]++
+	switch bucket := lastChar % 2; bucket {
+	case 0:
 		tmpl.Execute(w, map[string]string{"bucket": BUCKET_A_NAME})
-	} else {
-		assignments[BUCKET_B_NAME]++
+	case 1:
 		tmpl.Execute(w, map[string]string{"bucket": BUCKET_B_NAME})
 	}
 }
